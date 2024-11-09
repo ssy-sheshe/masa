@@ -4,7 +4,7 @@ _base_ = [
     'mmdet::_base_/default_runtime.py'
 ]
 
-lang_model_name = 'bert-base-uncased'
+lang_model_name = '/ssd/bert-base-uncased'
 
 model = dict(
     type='GroundingDINO',
