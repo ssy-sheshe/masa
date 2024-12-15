@@ -67,7 +67,14 @@ if __name__ == '__main__':
     os.makedirs(output_folder, exist_ok=True)
 
     files = [os.path.join(input_directory, img['file_name'].replace('.jpg', '.json')) for img in img_list['images']]
+    files_tmp = []
+    for file in files:
+        if os.path.exists(file):
+            files_tmp.append(file)
+        else:
+            print(f"{file} don't download")
 
+    files = files_tmp
     coco_format_full_anno = {
         'images': [],
         'annotations': [],

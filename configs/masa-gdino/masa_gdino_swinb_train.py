@@ -8,7 +8,7 @@ detector = _base_.model
 detector.pop('data_preprocessor')
 detector['init_cfg'] = dict(
     type='Pretrained',
-    checkpoint= 'saved_models/pretrain_weights/groundingdino_swinb_cogcoor_mmdet-55949c9c.pth'
+    checkpoint= '/ssd/yqshe/code/masa/saved_models/pretrain_weights/groundingdino_swinb_cogcoor_mmdet-55949c9c.pth'
     # noqa: E501
 )
 detector['type'] = 'GroundingDINOMasa'
@@ -206,7 +206,7 @@ test_pipeline = [
 ]
 val_dataloader = dict(
         dataset=dict(
-            ann_file='data/tao/annotations/tao_val_lvis_v1_classes.json',
+            ann_file='/ssd/yqshe/code/masa/data/tao/annotations/tao_val_lvis_v1_classes.json',
 
             pipeline=test_pipeline
     )
@@ -217,7 +217,7 @@ test_dataloader = val_dataloader
 val_evaluator = dict(
     type='TaoTETAMetric',
     format_only=False,
-    ann_file='data/tao/annotations/tao_val_lvis_v1_classes.json',
+    ann_file='/ssd/yqshe/code/masa/data/tao/annotations/tao_val_lvis_v1_classes.json',
     metric=['TETA'],
     outfile_prefix='results/masa_results/masa-groundingdino-release_detic_dets-test',
 )

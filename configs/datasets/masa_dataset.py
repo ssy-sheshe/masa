@@ -58,8 +58,8 @@ test_pipeline = [
 
 # dataloader
 train_dataloader = dict(
-    batch_size=8,
-    num_workers=8,
+    batch_size=1,
+    num_workers=1,
     persistent_workers=True,
     pin_memory=True,
     sampler=dict(type='DefaultSampler'),  # image-based sampling
@@ -68,12 +68,12 @@ train_dataloader = dict(
         dataset=dict(
             type='RandomSampleConcatDataset',
             sampling_probs=[1],
-            fixed_length=200000,
+            fixed_length=200,
             datasets=[
                 dict(
                     type=dataset_type,
-                    ann_file='data/sam/sam_annotations/jsons/sa1b_coco_fmt_500k_bbox_anno.json',
-                    data_prefix=dict(img='data/sam/batch0/'),
+                    ann_file='/ssd/yqshe/code/masa/data/sam/sam_annotations/jsons/sa1b_coco_fmt_500k_bbox_anno.json',
+                    data_prefix=dict(img='/ssd/yqshe/code/masa/data/sam/batch0/'),
                     serialize_data=True,
                     pipeline=[
                         dict(type='LoadImageFromFile'),
@@ -97,7 +97,7 @@ val_dataloader = dict(
     sampler=dict(type='TrackImgSampler'),  # image-based sampling
     dataset=dict(
         type=test_dataset_tpye,
-        ann_file='data/tao/annotations/tao_val_lvis_v1_classes.json',
+        ann_file='/ssd/yqshe/code/masa/data/tao/annotations/tao_val_lvis_v1_classes.json',
         data_prefix=dict(img_path='data/tao/frames/'),
         test_mode=True,
         pipeline=test_pipeline
@@ -110,7 +110,7 @@ val_evaluator = dict(
     type='TaoTETAMetric',
     dataset_type=test_dataset_tpye,
     format_only=False,
-    ann_file='data/tao/annotations/tao_val_lvis_v1_classes.json',
+    ann_file='/ssd/yqshe/code/masa/data/tao/annotations/tao_val_lvis_v1_classes.json',
     metric=['TETA'])
 test_evaluator = val_evaluator
 
