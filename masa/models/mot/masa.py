@@ -447,7 +447,8 @@ class MASA(BaseMOTModel):
             else:
                 x = self.detector.backbone.forward(key_imgs)
                 ref_x = self.detector.backbone.forward(ref_imgs)
-
+        x = x[1:]
+        ref_x = ref_x[1:]
         x_m = self.masa_adapter(x)
         ref_x_m = self.masa_adapter(ref_x)
 
