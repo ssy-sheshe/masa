@@ -58,8 +58,10 @@ test_pipeline = [
 
 # dataloader
 train_dataloader = dict(
-    batch_size=1,
-    num_workers=1,
+    # batch_size=1,
+    # num_workers=0,
+    batch_size=8,
+    num_workers=8,
     persistent_workers=True,
     pin_memory=True,
     sampler=dict(type='DefaultSampler'),  # image-based sampling

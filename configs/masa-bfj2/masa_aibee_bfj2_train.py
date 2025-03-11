@@ -1,6 +1,7 @@
 _base_ = [
     '../../projects/aibee_bfj2/aibee_bfj2_pretrain_mixeddata_masa.py',
     '../datasets/masa_dataset_aibee.py',
+    # '../datasets/masa_dataset.py',
     '../default_runtime.py'
 ]
 default_scope = 'mmdet'

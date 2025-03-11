@@ -1,7 +1,7 @@
 # dataset settings
 dataset_type = 'MASADataset'
 data_root = 'data/sam/'
-img_scale = (1024, 1024)
+img_scale = (1024, 576)
 
 def get_dataset_dict_list(ann_file_list,
                          img_prefix_list,
@@ -144,7 +144,7 @@ train_pipeline = [
             dict(
                 type='RandomResize',
                 scale=img_scale,
-                ratio_range=(0.1, 2.0),
+                ratio_range=(0.1, 1.6),
                 keep_ratio=True,
                 clip_object_border=False),
             dict(type='RandomCrop', crop_size=img_scale, bbox_clip_border=False),
@@ -179,8 +179,10 @@ train_dataset_dict_list = get_dataset_dict_list(ann_file_list,
 
 # dataloader
 train_dataloader = dict(
-    batch_size=1,
-    num_workers=1,
+    # batch_size=1,
+    # num_workers=0,
+    batch_size=8,
+    num_workers=8,
     persistent_workers=True,
     pin_memory=True,
     sampler=dict(type='DefaultSampler'),  # image-based sampling
