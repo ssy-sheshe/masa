@@ -148,13 +148,15 @@ class MASADataset(BaseDetDataset):
             raw_img_info = self.coco.load_imgs([img_id])[0]
             raw_img_info["img_id"] = img_id
             ann_ids = self.coco.get_ann_ids(img_ids=[img_id])
+            if len(ann_ids) < 5:
+                continue
             raw_ann_info = self.coco.load_anns(ann_ids)
 
             total_ann_ids.extend(ann_ids)
 
             parsed_data_info = self.parse_data_info(
                 {"raw_ann_info": raw_ann_info, "raw_img_info": raw_img_info}
-            )
+            )#pay attention
             data_list.append(parsed_data_info)
         if self.ANN_ID_UNIQUE:
             assert len(set(total_ann_ids)) == len(
