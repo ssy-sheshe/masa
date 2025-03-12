@@ -144,7 +144,7 @@ train_pipeline = [
             dict(
                 type='RandomResize',
                 scale=img_scale,
-                ratio_range=(0.1, 1.6),
+                ratio_range=(0.1, 1.2),
                 keep_ratio=True,
                 clip_object_border=False),
             dict(type='RandomCrop', crop_size=img_scale, bbox_clip_border=False),
