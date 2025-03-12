@@ -191,7 +191,7 @@ train_dataloader = dict(
         dataset=dict(
             type='RandomSampleConcatDataset',
             sampling_probs=[1],
-            fixed_length=200,
+            fixed_length=400,
             datasets=train_dataset_dict_list
     ),
         pipeline=train_pipeline
