@@ -23,7 +23,8 @@ class RandomSampleConcatDataset(_ConcatDataset):
         assert len(sampling_probs) == len(
             datasets
         ), "Number of sampling probabilities must match the number of datasets"
-        assert sum(sampling_probs) == 1.0, "Sum of sampling probabilities must be 1.0"
+        print(sum(sampling_probs))
+        assert round(sum(sampling_probs)) == 1.0, "Sum of sampling probabilities must be 1.0"
 
         self.datasets: List[BaseDataset] = []
         for i, dataset in enumerate(datasets):
@@ -41,6 +42,7 @@ class RandomSampleConcatDataset(_ConcatDataset):
 
         self.metainfo = self.datasets[0].metainfo
         total_datasets_length = sum([len(dataset) for dataset in self.datasets])
+        print(f"total_datasets_length is {total_datasets_length}")
         assert (
             self.fixed_length <= total_datasets_length
         ), "the length of the concatenated dataset must be less than the sum of the lengths of the individual datasets"
