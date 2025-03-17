@@ -31,7 +31,7 @@ model = dict(
         bgr_to_rgb=True,
         # Image padding parameters
         pad_mask=False,  # In instance segmentation, the mask needs to be padded
-        pad_size_divisor=1024, # Padding the image to multiples of 32
+        pad_size_divisor=32, # Padding the image to multiples of 32
     ),
     detector=detector,
     masa_adapter=[
@@ -255,7 +255,7 @@ default_hooks = dict(
 checkpoint = dict(type='CheckpointHook', interval=1),
 )
 
-vis_backends = [dict(type='LocalVisBackend')]
+vis_backends = [dict(type='TensorboardVisBackend')]
 visualizer = dict(
     type='MasaTrackLocalVisualizer', vis_backends=vis_backends, name='visualizer')
 
