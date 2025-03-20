@@ -148,7 +148,7 @@ class MASADataset(BaseDetDataset):
             raw_img_info = self.coco.load_imgs([img_id])[0]
             raw_img_info["img_id"] = img_id
             ann_ids = self.coco.get_ann_ids(img_ids=[img_id])
-            if len(ann_ids) < 5:
+            if len(ann_ids) < 10:
                 continue
             raw_ann_info = self.coco.load_anns(ann_ids)
 

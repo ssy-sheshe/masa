@@ -26,10 +26,10 @@ def get_dataset_dict_list(ann_file_list,
 
 ann_file_list = [
     "/ssd/jfdeng/data/mall_train/mall_hk_rainy/annotations/instances_train.json",
-    # "/face/jfdeng/data/mall_train/mall_scpg_rainy/annotations/instances_train.json",
-    # "/face/jfdeng/data/mall_train/mall_taikooli_qt/annotations/instances_train_bhrf.json",
-    # "/face/jfdeng/data/hqyc_train/annotations/instances_train_bhrf.json",
-    # "/face/jfdeng/data/mall_train/mall_general_bhrf/annotations/instances_train.json",
+    "/face/jfdeng/data/mall_train/mall_scpg_rainy/annotations/instances_train.json",
+    "/face/jfdeng/data/mall_train/mall_taikooli_qt/annotations/instances_train_bhrf.json",
+    "/face/jfdeng/data/hqyc_train/annotations/instances_train_bhrf.json",
+    "/face/jfdeng/data/mall_train/mall_general_bhrf/annotations/instances_train.json",
     # "/face/jfdeng/data/mall_train/airport_sdjc_master/annotations/instances_train.json",
     # "/face/jfdeng/data/mall_train/airport_kmjc_bhrf/annotations/instances_train.json",
     # "/face/jfdeng/data/mall_train/mall_cmgj/annotations/instances_train_bhrf.json",
@@ -74,10 +74,10 @@ ann_file_list = [
 ]
 img_prefix_list = [
     "/ssd/jfdeng/data/mall_train/mall_hk_rainy/train",
-    # "/face/jfdeng/data/mall_train/mall_scpg_rainy/train",
-    # "/face/jfdeng/data/mall_train/mall_taikooli_qt/train",
-    # "/face/jfdeng/data/hqyc_train/train",
-    # "/face/jfdeng/data/mall_train/mall_general_bhrf/train",
+    "/face/jfdeng/data/mall_train/mall_scpg_rainy/train",
+    "/face/jfdeng/data/mall_train/mall_taikooli_qt/train",
+    "/face/jfdeng/data/hqyc_train/train",
+    "/face/jfdeng/data/mall_train/mall_general_bhrf/train",
     # "/face/jfdeng/data/mall_train/airport_sdjc_master/train",
     # "/face/jfdeng/data/mall_train/airport_kmjc_bhrf/train",
     # "/face/jfdeng/data/mall_train/mall_cmgj/train",
@@ -190,8 +190,8 @@ train_dataloader = dict(
         type='SeqMultiImageMixDataset',
         dataset=dict(
             type='RandomSampleConcatDataset',
-            sampling_probs=[1],
-            fixed_length=400,
+            sampling_probs=[0.2,0.2,0.2,0.2,0.2],
+            fixed_length=100000,
             datasets=train_dataset_dict_list
     ),
         pipeline=train_pipeline
