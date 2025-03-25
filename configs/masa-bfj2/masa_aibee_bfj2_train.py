@@ -9,7 +9,7 @@ detector = _base_.model
 detector.pop('data_preprocessor')
 detector['init_cfg'] = dict(
     type='Pretrained',
-    checkpoint= '/ssd/yqshe/code/masa/saved_models/masa_models/aibee_detector.pth'
+    checkpoint= '/ssd/yqshe/code/masa/saved_models/masa_models/epoch_100.pth'
     # noqa: E501
 )
 detector['type'] = 'RetinaNet'
