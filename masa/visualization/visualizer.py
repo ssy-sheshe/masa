@@ -117,6 +117,8 @@ class MasaTrackLocalVisualizer(Visualizer):
             scales = _get_adaptive_scales(areas.cpu().numpy())
 
             for i, (pos, label) in enumerate(zip(positions, labels)):
+                if label != 0:
+                    continue
                 if self.label_names is not None:
                     label_text = self.label_names[label]
                 else:

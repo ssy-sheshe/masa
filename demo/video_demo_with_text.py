@@ -21,6 +21,7 @@ from mmdet.registry import VISUALIZERS
 from mmcv.ops.nms import batched_nms
 
 import masa
+import reppelees_module
 from masa.apis import inference_masa, init_masa, inference_detector, build_test_pipeline
 from masa.models.sam import SamPredictor, sam_model_registry
 from utils import filter_and_update_tracks
@@ -77,6 +78,7 @@ def parse_args():
     parser.add_argument('--sam_mask', action='store_true', help='Use SAM to generate mask for segmentation tracking')
     parser.add_argument('--sam_path',  type=str, default='saved_models/pretrain_weights/sam_vit_h_4b8939.pth', help='Default path for SAM models')
     parser.add_argument('--sam_type', type=str, default='vit_h', help='Default type for SAM models')
+    parser.add_argument('--aibee_bfj', action='store_true', help='Use unified model, which means the masa adapter is built upon the bfj model.')
     parser.add_argument(
         '--wait-time',
         type=float,
@@ -121,7 +123,10 @@ def main():
     if texts is not None:
         masa_model.cfg.visualizer['texts'] = texts
     else:
-        masa_model.cfg.visualizer['texts'] = det_model.dataset_meta['classes']
+        if args.aibee_bfj:
+            masa_model.cfg.visualizer['texts'] = ("body", "head", "face",)
+        else:
+            masa_model.cfg.visualizer['texts'] = det_model.dataset_meta['classes']
 
     # init visualizer
     masa_model.cfg.visualizer['save_dir'] = args.save_dir
@@ -143,7 +148,15 @@ def main():
     for frame in track_iter_progress((video_reader, len(video_reader))):
 
         # unified models mean that masa build upon and reuse the foundation model's backbone features for tracking
-        if args.unified:
+        if args.unified and args.aibee_bfj:
+            track_result = inference_masa(masa_model, frame, frame_id=frame_idx,
+                                          video_len=len(video_reader),
+                                          test_pipeline=masa_test_pipeline,
+                                          fp16=args.fp16,
+                                          show_fps=args.show_fps)
+            if args.show_fps:
+                track_result, fps = track_result
+        elif args.unified:
             track_result = inference_masa(masa_model, frame,
                                           frame_id=frame_idx,
                                           video_len=len(video_reader),
@@ -235,6 +248,8 @@ def main():
                 frames = pool.starmap(
                     visualize_frame, [(args, visualizer, frame, track_result.to('cpu'), idx, fps) for idx, (frame, fps, track_result) in enumerate(zip(frames, fps_list, instances_list))]
                 )
+            # for idx, (frame, fps, track_result) in enumerate(zip(frames, fps_list, instances_list)):
+            #     visualize_frame(args, visualizer, frame, track_result.to('cpu'), idx, fps)
         else:
             with Pool(processes=num_cores) as pool:
                 frames = pool.starmap(

@@ -92,7 +92,7 @@ class MASA(BaseMOTModel):
 
         if detector is not None:
             self.detector = MODELS.build(detector)
-        self.detector_type = detector['type']
+            self.detector_type = detector['type']
         if masa_adapter is not None:
             self.masa_adapter = MODELS.build(masa_adapter)
 
@@ -340,13 +340,22 @@ class MASA(BaseMOTModel):
                         )[0]
                     else:
                         x = self.detector.backbone(single_img)
-                        x_m = self.masa_adapter(x)
+                        if self.detector_type == "RetinaNet" or self.detector_type=="AibeeBfjMasa":
+                            x_m = x[1:]
+                        else:
+                            x_m = x
+                        #类似loss中的修改截取检测输出
+                        x_m = self.masa_adapter(x_m)
                         if self.detector.with_neck:
                             x = self.detector.neck(x)
-
-                        img_data_sample = self.detector.predict(
-                            single_img, x, [img_data_sample], rescale=rescale
-                        )[0]
+                        if self.detector_type == "RetinaNet" or self.detector_type=="AibeeBfjMasa":
+                            img_data_sample = self.detector.predict(
+                                single_img, x, [img_data_sample], rescale=rescale
+                            )[0]
+                        else:
+                            img_data_sample = self.detector.predict(
+                                single_img, x, [img_data_sample], rescale=rescale
+                            )[0]
                 else:
                     raise NotImplementedError
 
