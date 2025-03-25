@@ -38,7 +38,7 @@ class AibeeBfjMasa(RetinaNet):
                                            idxs=result.pred_instances.labels,
                                            class_agnostic=True,
                                            nms_cfg=dict(type='nms',
-                                                        iou_threshold=0.5,
+                                                        iou_threshold=0.8,
                                                         class_agnostic=True,
                                                         split_thr=100000))
         det_results = InstanceData()
