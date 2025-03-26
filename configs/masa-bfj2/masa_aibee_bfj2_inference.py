@@ -176,13 +176,13 @@ model = dict(
                 neg_sampler=dict(type='RandomSampler')))),
     tracker=dict(
         type='MasaTaoTracker',
-        init_score_thr=0.1,
+        init_score_thr=0.5,
         obj_score_thr=0.01,
         match_score_thr=0.5,
         memo_tracklet_frames=10,
         memo_momentum=0.8,
         with_cats=False,
-        max_distance=100,
+        max_distance=-1,
         fps=30,
         )
 )

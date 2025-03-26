@@ -42,8 +42,12 @@ class AibeeBfjMasa(RetinaNet):
                                                         class_agnostic=True,
                                                         split_thr=100000))
         det_results = InstanceData()
-        det_results.bboxes = det_bboxes[:, :4]
-        det_results.labels = result.pred_instances.labels[keep_idx]
-        det_results.scores = result.pred_instances.scores[keep_idx]
+        bboxes = det_bboxes[:, :4]
+        labels = result.pred_instances.labels[keep_idx]
+        scores = result.pred_instances.scores[keep_idx]
+        filtering_idx = (scores > 0.3) & (labels==0)
+        det_results.bboxes = bboxes[filtering_idx]
+        det_results.labels = labels[filtering_idx]
+        det_results.scores = scores[filtering_idx]
         result.pred_instances = det_results
         return batch_data_samples
