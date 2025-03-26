@@ -259,16 +259,17 @@ class MasaTaoTracker(BaseTracker):
         else:
             mask_inds = []
 
-        bboxes, labels, scores, embeds, mask_inds = self.remove_distractor(
-            bboxes,
-            labels,
-            scores,
-            track_feats=embeds,
-            mask_inds=mask_inds,
-            nms="inter",
-            distractor_score_thr=self.distractor_score_thr,
-            distractor_nms_thr=self.distractor_nms_thr,
-        )
+        # aibee detect don't need
+        # bboxes, labels, scores, embeds, mask_inds = self.remove_distractor(
+        #     bboxes,
+        #     labels,
+        #     scores,
+        #     track_feats=embeds,
+        #     mask_inds=mask_inds,
+        #     nms="inter",
+        #     distractor_score_thr=self.distractor_score_thr,
+        #     distractor_nms_thr=self.distractor_nms_thr,
+        # )
 
         # init ids container
         ids = torch.full((bboxes.size(0),), -1, dtype=torch.long)
