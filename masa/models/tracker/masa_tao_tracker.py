@@ -13,7 +13,7 @@ from mmdet.structures import TrackDataSample
 from mmdet.structures.bbox import bbox_overlaps
 from mmengine.structures import InstanceData
 from torch import Tensor
-
+import lap
 
 @MODELS.register_module()
 class MasaTaoTracker(BaseTracker):
@@ -310,17 +310,22 @@ class MasaTaoTracker(BaseTracker):
                 match_scores = match_scores * distance_mask
 
             # track according to match_scores
-            for i in range(bboxes.size(0)):
-                conf, memo_ind = torch.max(match_scores[i, :], dim=0)
-                id = memo_ids[memo_ind]
-                if conf > self.match_score_thr:
-                    if id > -1:
-                        # keep bboxes with high object score
-                        # and remove background bboxes
-                        if scores[i] > self.obj_score_thr:
-                            ids[i] = id
-                            match_scores[:i, memo_ind] = 0
-                            match_scores[i + 1 :, memo_ind] = 0
+            # for i in range(bboxes.size(0)):
+            #     conf, memo_ind = torch.max(match_scores[i, :], dim=0)
+            #     id = memo_ids[memo_ind]
+            #     if conf > self.match_score_thr:
+            #         if id > -1:
+            #             # keep bboxes with high object score
+            #             # and remove background bboxes
+            #             if scores[i] > self.obj_score_thr:
+            #                 ids[i] = id
+            #                 match_scores[:i, memo_ind] = 0
+            #                 match_scores[i + 1 :, memo_ind] = 0
+            cost, x, y = lap.lapjv((1-match_scores).detach().cpu().numpy(), extend_cost=True, cost_limit=0.5)
+            for ix, mx in enumerate(x):
+                if mx >= 0:
+                    id = memo_ids[mx]
+                    ids[ix] = id
 
         # initialize new tracks
         new_inds = (ids == -1) & (scores > self.init_score_thr).cpu()
