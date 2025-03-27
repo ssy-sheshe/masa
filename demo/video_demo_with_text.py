@@ -22,6 +22,7 @@ from mmcv.ops.nms import batched_nms
 
 import masa
 import reppelees_module
+import json
 from masa.apis import inference_masa, init_masa, inference_detector, build_test_pipeline
 from masa.models.sam import SamPredictor, sam_model_registry
 from utils import filter_and_update_tracks
@@ -42,14 +43,14 @@ def set_file_descriptor_limit(limit):
 # Set the file descriptor limit to 65536
 set_file_descriptor_limit(65536)
 
-def visualize_frame(args, visualizer, frame, track_result, frame_idx, fps=None):
+def visualize_frame(args, visualizer, frame, track_result, frame_idx, fps=None, out_file=None):
     visualizer.add_datasample(
         name='video_' + str(frame_idx),
         image=frame[:, :, ::-1],
         data_sample=track_result[0],
         draw_gt=False,
         show=False,
-        out_file=None,
+        out_file=out_file,
         pred_score_thr=args.score_thr,
         fps=fps,)
     frame = visualizer.get_image()
@@ -67,6 +68,7 @@ def parse_args():
     parser.add_argument( '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument('--score-thr', type=float, default=0.2, help='Bbox score threshold')
     parser.add_argument('--out', type=str, help='Output video file')
+    parser.add_argument('--out_json', type=str, help='Output video file')
     parser.add_argument('--save_dir', type=str, help='Output for video frames')
     parser.add_argument('--texts', help='text prompt')
     parser.add_argument('--line_width', type=int, default=5, help='Line width')
@@ -145,6 +147,7 @@ def main():
     instances_list = []
     frames = []
     fps_list = []
+    res = {}
     for frame in track_iter_progress((video_reader, len(video_reader))):
 
         # unified models mean that masa build upon and reuse the foundation model's backbone features for tracking
@@ -211,6 +214,21 @@ def main():
         frames.append(frame)
         if args.show_fps:
             fps_list.append(fps)
+        # vis detect
+        # visualize_frame(args, visualizer, frame, track_result.to('cpu'), frame_idx, os.path.join("./tmp/", f"{frame_idx}.jpg"))
+        for i in range(len(track_result[0].pred_track_instances.bboxes)):
+            bbx = track_result[0].pred_track_instances.bboxes[i].detach().cpu().numpy().tolist()
+            bbx[0] = int(bbx[0])
+            bbx[1] = int(bbx[1])
+            bbx[2] = int(bbx[2] - bbx[0])
+            bbx[3] = int(bbx[3] - bbx[1])
+            track_id = int(track_result[0].pred_track_instances.instances_id[i])
+            confidence = float(track_result[0].pred_track_instances.scores[i])
+            res.setdefault(int(frame_idx), []).append([bbx, "{}".format(track_id), [-1, -1], round(confidence, 2)])
+
+    output_json_file = os.path.join(args.out_json, "{}.final.reduced.json".format(os.path.basename(args.video)))
+    with open(output_json_file, 'w') as f:
+        json.dump(res, f)
 
     if not args.no_post:
         instances_list = filter_and_update_tracks(instances_list, (frame.shape[1], frame.shape[0]))
@@ -237,7 +255,7 @@ def main():
 
 
 
-    if args.out:
+    if args.out and not args.aibee_bfj:
         print('Start to visualize the results...')
         num_cores = max(1, min(os.cpu_count() - 1, 16))
         print('Using {} cores for visualization'.format(num_cores))
@@ -259,6 +277,7 @@ def main():
         for frame in frames:
             if args.out:
                 video_writer.write(frame[:, :, ::-1])
+
 
     if video_writer:
         video_writer.release()
